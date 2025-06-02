@@ -14,8 +14,11 @@ function initializeForm() {
       // Simple validation
       let isValid = true;
 
-      if (name == '') {
+      if (name === '') {
         markInvalid('#name', 'Please enter your name');
+        isValid = false;
+      } else if (name.length < 3) {
+        markInvalid('#name', 'Name must be at least 3 characters');
         isValid = false;
       } else {
         markValid('#name');
@@ -62,15 +65,52 @@ function initializeForm() {
       }
     });
 
-    // Input validation functions
+    // Clear error messages on typing
+    $contactForm.find('input, textarea').on('input', function () {
+      $(this).removeClass('form-error');
+      $(this).siblings('.error-message').remove();
+    });
+
+    // Blur validation (on focus out)
+    $contactForm.find('input, textarea').on('blur', function () {
+      const fieldId = $(this).attr('id');
+      const value = $.trim($(this).val());
+
+      if (fieldId === 'name') {
+        if (value === '') {
+          markInvalid('#name', 'Please enter your name');
+        } else if (value.length < 3) {
+          markInvalid('#name', 'Name must be at least 3 characters');
+        } else {
+          markValid('#name');
+        }
+      }
+
+      if (fieldId === 'email') {
+        if (value === '') {
+          markInvalid('#email', 'Please enter your email');
+        } else if (!isValidEmail(value)) {
+          markInvalid('#email', 'Please enter a valid email address');
+        } else {
+          markValid('#email');
+        }
+      }
+
+      if (fieldId === 'message') {
+        if (value === '') {
+          markInvalid('#message', 'Please enter your message');
+        } else {
+          markValid('#message');
+        }
+      }
+    });
+
+    // Utility functions
     function markInvalid(selector, message) {
       const $field = $(selector);
       $field.addClass('form-error');
-
-      // Remove existing error message
       $field.siblings('.error-message').remove();
 
-      // Add error message
       const $errorMessage = $('<span>')
         .addClass('error-message')
         .text(message)
@@ -94,11 +134,5 @@ function initializeForm() {
       const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(email.toLowerCase());
     }
-
-    // Clear error messages on typing
-    $contactForm.find('input, textarea').on('input', function () {
-      $(this).removeClass('form-error');
-      $(this).siblings('.error-message').remove();
-    });
   }
 }
