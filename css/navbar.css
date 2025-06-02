@@ -105,6 +105,10 @@
   display: none;
 }
 
+#themeIcon {
+  color: #000;
+}
+
 .dark-mode .fa-moon {
   display: none;
 }
@@ -168,3 +172,15 @@
     transform: rotate(-45deg) translate(5px, -5px);
   }
 }
+
+.fa-sun {
+  display: none;
+}
+.dark-mode .fa-moon {
+  display: none;
+}
+.dark-mode .fa-sun {
+  display: block;
+  color: var(--accent-color);
+}
+
